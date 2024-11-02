@@ -89,10 +89,35 @@ function displayFiles(files) {
 
     files.children.forEach(file => {
         const row = document.createElement('tr');
-        const icon_text_before=file.type === 'directory' ? '📂  ' : '📄  ';
+        const icon_text_before = file.type === 'directory' ? '📂  ' : '📄  ';
         const nameCell = document.createElement('td');
-        nameCell.textContent = icon_text_before+" "+file.name;
+        nameCell.textContent = icon_text_before + " " + file.name;
+
+        const actionsCell = document.createElement('td'); // 新增单元格用于操作
+        actionsCell.style.textAlign = 'right'; // 右对齐
+        const actionsDiv = document.createElement('div');
+        
+        const copyLinkButton = document.createElement('button');
+        copyLinkButton.textContent = '📋复制链接';
+        copyLinkButton.className = 'action-button';
+        copyLinkButton.onclick = (e) => {
+            e.stopPropagation(); // 防止点击事件传播
+            copyFileLink(file.path);
+        };
+
+        const downloadButton = document.createElement('button');
+        downloadButton.textContent = '📥下载';
+        downloadButton.className = 'action-button';
+        downloadButton.onclick = (e) => {
+            e.stopPropagation(); // 防止点击事件传播
+            downloadFile(file.path);
+        };
+
+        actionsDiv.appendChild(copyLinkButton);
+        actionsDiv.appendChild(downloadButton);
+        actionsCell.appendChild(actionsDiv); // 将按钮容器添加到操作单元格
         row.appendChild(nameCell);
+        row.appendChild(actionsCell); // 添加操作单元格
 
         row.onclick = () => {
             if (file.type === 'directory') {
@@ -105,6 +130,7 @@ function displayFiles(files) {
         fileList.appendChild(row);
     });
 }
+
 
 function displayFileContent(file) {
     fetch(file.path)
@@ -131,6 +157,23 @@ function displayFileContent(file) {
             document.getElementById('file-content').style.display = 'block';
         })
         .catch(error => console.error('Error loading file content:', error)); // 处理错误
+}
+function copyFileLink(filePath) {
+    const fullLink = window.location.origin + '/' + filePath; // 创建完整链接
+    navigator.clipboard.writeText(fullLink).then(() => {
+        alert('文件链接已复制: ' + fullLink);
+    }).catch(err => {
+        console.error('复制失败:', err);
+    });
+}
+
+function downloadFile(filePath) {
+    const a = document.createElement('a');
+    a.href = filePath; // 设置链接到文件路径
+    a.download = ''; // 设置下载属性
+    document.body.appendChild(a);
+    a.click(); // 模拟点击下载
+    document.body.removeChild(a); // 下载后清理DOM
 }
 
 // 启动初始加载

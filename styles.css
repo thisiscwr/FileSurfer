@@ -81,3 +81,18 @@ tr:hover td {
   font-size: 20px;
   font-weight: bold;
 }
+
+
+.action-button {
+  margin-left: 5px; /* 按钮之间的间距 */
+  padding: 5px 10px;
+  background-color: rgb(103, 178, 193); /* 初始为灰色 */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s; /* 平滑过渡效果 */
+}
+
+.action-button:hover {
+  background-color: rgb(114, 238, 217); /* 悬停时变为蓝色 */
+}
